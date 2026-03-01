@@ -1,21 +1,6 @@
-# life-guard-ai-python
+# Pool Monitoring System
 
-Pool boundary detection system using OpenCV.
-
-## Features
-
-- **Pool Boundary Detection**: Define and visualize pool area with custom coordinates
-- **Modular Architecture**: Clean, maintainable code structure
-
-## Project Structure
-
-```
-├── detect_pool.py          # Main application entry point
-├── modules/                # Application modules
-│   ├── __init__.py         # Module initialization
-│   └── pool_boundary.py    # Pool boundary management
-└── requirements.txt        # Python dependencies
-```
+Pool monitoring system with object detection using YOLOv8.
 
 ## Installation
 
@@ -23,40 +8,74 @@ Pool boundary detection system using OpenCV.
 pip install -r requirements.txt
 ```
 
-## How to use
+## Structure
 
-1. Place your pool video (MP4 format) in the project folder
-2. Edit the `detect_pool.py` file:
-   - Change `video_path` to your video filename
-   - Adjust the 4 pool coordinates in `pool_coordinates`:
-     - Top-left corner [x, y]
-     - Top-right corner [x, y]
-     - Bottom-right corner [x, y]
-     - Bottom-left corner [x, y]
-3. Run the script:
-
-```bash
-python detect_pool.py
+```
+detect_pool.py           # Main application
+modules/
+  config_manager.py      # Configuration management
+  pool_boundary.py       # Pool area definition
+  point_selector.py      # Interactive point selection
+  object_detector.py     # YOLOv8 detection
+config.json              # Application configuration
+pool_config.json         # Pool coordinates (auto-generated)
 ```
 
-4. Press 'q' to close the video
+## Usage
 
-## Modules
+1. Set video path in `config.json`
+2. Run: `python detect_pool.py`
+3. First run - select pool boundary points:
+   - Click to add points
+   - Drag to move
+   - Right-click to remove
+   - Enter to save (minimum 3 points)
+4. Next runs - press 'c' to reconfigure or any key to use saved config
 
-### pool_boundary.py
-Manages pool area definition and rendering:
-- `PoolBoundary`: Class to handle pool coordinates
-- `draw()`: Draws pool boundary on video frames
-- `is_point_inside()`: Check if a point is inside pool area
-- `get_mask()`: Generate binary mask of pool area
+Keys during monitoring:
+- `q` - Quit
+- `d` - Toggle detection
 
-## Example Coordinates
+## Configuration
 
-```python
-pool_coordinates = [
-    [480, 350],   # Top-left corner
-    [1440, 560],  # Top-right corner
-    [1250, 980],  # Bottom-right corner
-    [60, 450]     # Bottom-left corner
-]
+All settings in `config.json`. No default values - all parameters are required.
+
+### Key parameters
+
+```json
+{
+  "video": {
+    "path": "pool_video.mp4"
+  },
+  "object_detection": {
+    "enabled": true,
+    "model_size": "n",
+    "confidence_threshold": 0.15,
+    "person_confidence_threshold": 0.5,
+    "alert_delay_seconds": 2.0,
+    "grace_period_seconds": 5.0,
+    "skip_frames": 1,
+    "process_size": 640
+  }
+}
 ```
+
+**Timing:**
+- `alert_delay_seconds` - Seconds in zone before alert
+- `grace_period_seconds` - Alert persistence after last detection
+
+**Detection:**
+- `confidence_threshold` - Minimum confidence for general detection
+- `person_confidence_threshold` - Confidence to classify as person (higher = fewer false positives)
+- `skip_frames` - Process every N frames (higher = faster)
+- `process_size` - Processed frame width (smaller = faster)
+
+## How it Works
+
+Detects objects and people using YOLOv8, checks if detection center is inside pool boundary, triggers alerts based on zone occupation time.
+
+- Detection enters zone → timer starts
+- Stays for `alert_delay_seconds` → alert triggers  
+- Object leaves zone → alert persists for `grace_period_seconds`
+
+Each tracked object maintains consistent classification (person vs object) throughout its lifetime to prevent alternation.

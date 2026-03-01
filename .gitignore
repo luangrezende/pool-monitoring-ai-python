@@ -42,3 +42,14 @@ Thumbs.db
 *.avi
 *.mov
 *.mkv
+
+# Configuration
+pool_config.json
+config.json
+
+# YOLO Models
+*.pt
+*.onnx
+*.engine
+runs/
+ultralytics/
