@@ -1,0 +1,58 @@
+{
+  "video": {
+    "path": "pool.mp4",
+    "display_window_name": "Pool Monitoring System"
+  },
+  "pool_boundary": {
+    "min_points": 3,
+    "max_points": 20,
+    "line_color": [0, 255, 0],
+    "line_thickness": 2
+  },
+  "point_selector": {
+    "point_radius": 8,
+    "hover_radius": 12,
+    "window_name": "Select Pool Boundary Points"
+  },
+  "object_detection": {
+    "enabled": true,
+    "model_size": "n",
+    "confidence_threshold": 0.15,
+    "person_confidence_threshold": 0.5,
+    "skip_frames": 1,
+    "process_size": 640,
+    "alert_delay_seconds": 2.0,
+    "grace_period_seconds": 5.0,
+    "min_detection_area_percent": 0.005,
+    "max_detection_area_percent": 30.0,
+    "alert_box_color_in_pool": [0, 0, 255],
+    "alert_box_color_outside": [0, 255, 0],
+    "alert_box_thickness_in_pool": 3,
+    "alert_box_thickness_outside": 2,
+    "messages": {
+      "alert_person": "ALERT: PERSON IN POOL!",
+      "alert_object": "ALERT: OBJECT IN POOL!",
+      "alert_both": "ALERT: OBJECT IN POOL!"
+    },
+    "display": {
+      "show_timer_on_boxes": false,
+      "show_counter_before_alert": false
+    }
+  },
+  "ui": {
+    "fps_display": false,
+    "status_indicator_position": "top-right",
+    "font_scale": 0.7,
+    "font_thickness": 2,
+    "resizable_windows": true
+  },
+  "performance": {
+    "video_frame_delay_ms": 30
+  },
+  "hotkeys": {
+    "quit": "q",
+    "toggle_detection": "d",
+    "reconfigure_boundary": "c",
+    "clear_points": "c"
+  }
+}
